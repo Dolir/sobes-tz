@@ -1,7 +1,13 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { useStore } from "../_stores"
-import { Box, Button, TextField } from "@mui/material"
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography
+} from "@mui/material"
 import { observer } from "mobx-react"
 import TodoTable from "./_components/todo-table"
 import { SearchBar } from "./_components/searchbar"
@@ -25,7 +31,15 @@ function TodoPage() {
   return (
     <Box width="100%" display="flex" gap={4} flexDirection="column">
       <Box display="flex" flexDirection="column" gap={4}>
-        <h1>Todo App</h1>
+        <Box display="flex" gap={2} alignItems="center">
+          <Typography variant="h4">Todo App</Typography>{" "}
+          {todoStore.isFetchingTodos && (
+            <Box>
+              <CircularProgress size={24} />
+            </Box>
+          )}
+        </Box>
+
         <Box display="flex" gap={2} justifyContent="space-between">
           <Box display="flex" gap={2} alignItems="center">
             <TextField
@@ -51,6 +65,7 @@ function TodoPage() {
           />
         </Box>
       </Box>
+
       <TodoTable />
     </Box>
   )

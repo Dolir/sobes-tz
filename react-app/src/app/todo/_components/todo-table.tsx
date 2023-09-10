@@ -17,7 +17,10 @@ const TodoTable = () => {
   const { todoStore } = useStore()
 
   return (
-    <TableContainer component={Paper} sx={{ height: 400, overflowY: "auto" }}>
+    <TableContainer
+      component={Paper}
+      sx={{ height: 400, overflowY: "scroll", position: "relative" }}
+    >
       <Table aria-label="simple table" stickyHeader>
         <TableHead>
           <TableRow>

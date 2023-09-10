@@ -9,7 +9,7 @@ import { useStore } from "../_stores"
 
 function TodoLayout({ children }: PropsWithChildren) {
   const router = useRouter()
-  const { authStore } = useStore()
+  const { authStore, todoStore } = useStore()
   return (
     <Box display="flex" flexDirection="column" gap={2} width="100%">
       <Box>
@@ -18,6 +18,7 @@ function TodoLayout({ children }: PropsWithChildren) {
           onClick={() => {
             router.push("/auth")
             authStore.logout()
+            todoStore.clearData()
           }}
         >
           Log out

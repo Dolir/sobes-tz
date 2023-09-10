@@ -2,35 +2,37 @@ import { TodoType } from "@platform/nest-app/lib/slice"
 import { makeObservable, observable, action, runInAction } from "mobx"
 import { createTodo, getAllTodos, removeTodo, updateTodo } from "../_api"
 
+const defaultFilterData = {
+  sortField: "createdAt",
+  sortOrder: "desc"
+} as const
 export class TodoStore {
   todos: TodoType.TodoDto[] = []
-  filterData: TodoType.TodoGetAllQueryParams = {}
+  filterData: TodoType.TodoGetAllQueryParams = defaultFilterData
+  isFetchingTodos: boolean = false
 
   constructor() {
     makeObservable(this, {
       todos: observable,
       filterData: observable,
+      isFetchingTodos: observable,
       addTodo: action,
       removeTodo: action,
       updateTodo: action,
       fetchTodos: action,
-      setFilterData: action
+      setFilterData: action,
+      clearData: action
     })
   }
 
   addTodo = async (title: string) => {
-    const newTodo = await createTodo({ title })
-    runInAction(() => {
-      this.todos.push(newTodo)
-    })
+    await createTodo({ title })
+    await this.fetchTodos(this.filterData)
   }
 
   updateTodo = async (data: TodoType.TodoUpdateRequestDto) => {
-    const newTodo = await updateTodo(data)
-    runInAction(() => {
-      const thisTodoIndex = this.todos.findIndex((todo) => todo.id === data.id)
-      this.todos[thisTodoIndex] = newTodo
-    })
+    await updateTodo(data)
+    await this.fetchTodos(this.filterData)
   }
 
   removeTodo = async (id: string) => {
@@ -41,13 +43,19 @@ export class TodoStore {
   }
 
   fetchTodos = async (filterData: TodoType.TodoGetAllQueryParams) => {
+    this.isFetchingTodos = true
     const todos = await getAllTodos(filterData)
     runInAction(() => {
+      this.isFetchingTodos = false
       this.todos = todos
     })
   }
 
   setFilterData = (data: Partial<TodoType.TodoGetAllQueryParams>) => {
     this.filterData = { ...this.filterData, ...data }
+  }
+  clearData = () => {
+    this.filterData = defaultFilterData
+    this.todos = []
   }
 }
