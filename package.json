@@ -1,0 +1,10 @@
+{
+  "name": "sobes-todo-list",
+  "version": "1.0.0",
+  "license": "MIT",
+  "workspaces": [
+    "nest-app",
+    "react-app"
+  ],
+  "private": true
+}

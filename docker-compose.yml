@@ -1,0 +1,37 @@
+version: '3'
+services:
+  # Nest.js Application
+  nest-app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.nest.dev  # Use a development Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    env_file: 
+      - ./.env
+    volumes:
+      - ./nest-app:/app/nest-app
+    depends_on:
+      - mongodb
+
+  # React.js Application
+  react-app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.react.dev  # Use a development Dockerfile
+    ports:
+      - "4000:4000" 
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3000  # Link to the Nest.js app service
+    volumes:
+      - ./react-app:/app/react-app
+
+  # MongoDB
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: master

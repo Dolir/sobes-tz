@@ -1,0 +1,22 @@
+# Use the official Node.js image as the base image
+FROM node:18-alpine
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the container
+COPY ./react-app ./react-app
+COPY package*.json ./
+COPY ./yarn.lock ./yarn.lock
+
+# Install dependencies
+RUN yarn
+
+# Copy the rest of the application code
+COPY . .
+
+WORKDIR /app/react-app
+
+ENV WATCHPACK_POLLING=true
+# Start the app
+CMD ["yarn", "dev"]
